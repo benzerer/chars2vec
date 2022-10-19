@@ -235,7 +235,6 @@ def train_model(emb_dim, X_train, y_train, model_chars,
 
     targets = np.array([float(el) for el in y_train])
     
-    print(X_train, targets)
     c2v_model.fit(X_train, targets, max_epochs, patience, validation_split, batch_size)
 
     return c2v_model
