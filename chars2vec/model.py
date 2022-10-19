@@ -101,8 +101,8 @@ class Chars2Vec:
 
             x_2.append(np.array(emb_list_2))
 
-        x_1_pad_seq = keras.preprocessing.sequence.pad_sequences(x_1)
-        x_2_pad_seq = keras.preprocessing.sequence.pad_sequences(x_2)
+        x_1_pad_seq = keras.utils.pad_sequences(x_1)
+        x_2_pad_seq = keras.utils.pad_sequences(x_2)
 
         self.model.fit([x_1_pad_seq, x_2_pad_seq], targets,
                        batch_size=batch_size, epochs=max_epochs,
@@ -149,7 +149,7 @@ class Chars2Vec:
 
                 list_of_embeddings.append(np.array(current_embedding))
 
-            embeddings_pad_seq = keras.preprocessing.sequence.pad_sequences(list_of_embeddings, maxlen=maxlen_padseq)
+            embeddings_pad_seq = keras.utils.pad_sequences(list_of_embeddings, maxlen=maxlen_padseq)
             new_words_vectors = self.embedding_model.predict([embeddings_pad_seq])
 
             for i in range(len(new_words)):
@@ -233,7 +233,9 @@ def train_model(emb_dim, X_train, y_train, model_chars,
     char_to_ix = {ch: i for i, ch in enumerate(model_chars)}
     c2v_model = Chars2Vec(emb_dim, char_to_ix)
 
-    targets = [float(el) for el in y_train]
+    targets = np.array([float(el) for el in y_train])
+    
+    print(X_train, targets)
     c2v_model.fit(X_train, targets, max_epochs, patience, validation_split, batch_size)
 
     return c2v_model
